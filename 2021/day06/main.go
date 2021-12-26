@@ -1,14 +1,26 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
 )
 
+var (
+	inputPath = flag.String("f", "input", "Puzzle input path")
+)
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
 func main() {
-	input := readLines(os.Args[1])
+	flag.Parse()
+	input := readLines(*inputPath)
 	fmt.Printf("Part 1: %d\n", countLanternfish(input, 80))
 	fmt.Printf("Part 2: %d\n", countLanternfish(input, 256))
 }
@@ -43,14 +55,12 @@ func countLanternfish(input []int, maxDays int) int {
 
 func readLines(path string) []int {
 	file, err := os.ReadFile(path)
-	if err != nil {
-		fmt.Println("Can't open the input file for reading")
-		os.Exit(1)
-	}
+	check(err)
 
 	var input []int
 	for _, line := range strings.Split(strings.TrimSpace(string(file)), ",") {
-		item, _ := strconv.Atoi(line)
+		item, err := strconv.Atoi(line)
+		check(err)
 		input = append(input, item)
 	}
 	return input
